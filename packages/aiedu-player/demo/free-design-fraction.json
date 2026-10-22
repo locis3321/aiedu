@@ -1,0 +1,85 @@
+{
+  "schema_version": "2.0",
+  "lesson_id": "free-design",
+  "revision": 1,
+  "teaching_request": {
+    "kind": "concept",
+    "content": "理解分数的意义"
+  },
+  "curriculum_context": null,
+  "learning_objectives": [
+    {
+      "id": "lo1",
+      "description": "围绕「理解分数的意义」开展符合年龄阶段的教学活动"
+    }
+  ],
+  "domain_models": [],
+  "teaching_design": {
+    "modes": [
+      "引导"
+    ],
+    "strategy_refs": [],
+    "skill_refs": []
+  },
+  "verification": {
+    "verified": true,
+    "verifier_version": "0.1.0",
+    "normalized_problem_hash": null,
+    "assumptions": [],
+    "claims": [],
+    "covered_claim_ids": [],
+    "report_ref": null
+  },
+  "initial_states": {},
+  "operations": [],
+  "activity_graph": [
+    {
+      "id": "step1",
+      "type": "predict",
+      "objective_refs": [],
+      "model_refs": [],
+      "representation_refs": [],
+      "completion_refs": [],
+      "next_ids": [
+        "step2"
+      ],
+      "prompt": "一块披萨被平均分成4份，取其中1份，这一份是整块披萨的几分之几？请用分数形式输入（例如 1/4）。",
+      "response": {
+        "kind": "expression",
+        "variables": []
+      },
+      "gate": {
+        "mode": "require_attempt",
+        "max_assists": 3
+      },
+      "assistance": [
+        "想一想：这块披萨被平均分成了几份？",
+        "取了几份？"
+      ],
+      "on_correct": [],
+      "on_incorrect": null
+    },
+    {
+      "id": "step2",
+      "type": "observe",
+      "objective_refs": [],
+      "model_refs": [],
+      "representation_refs": [],
+      "completion_refs": [],
+      "next_ids": [
+        "__end__"
+      ],
+      "narration": "把一块披萨平均分成4份，每一份的大小相同。分母4表示平均分成了4份，分子1表示取了其中的1份。所以每份是这块披萨的1/4。"
+    }
+  ],
+  "assessment": [],
+  "replay": null,
+  "representations": [],
+  "render": {
+    "runtime_version": "0.1.0",
+    "representation_adapter_versions": {},
+    "asset_manifest_ref": null,
+    "layout_strategy": "responsive"
+  },
+  "presentation": null
+}

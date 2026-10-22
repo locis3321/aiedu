@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>课堂承载 spike · 宿主</title>
+<style>
+:root{--fg:#1d1836;--bg:#fff8d7;--accent:#ff6b00;--border:#eadfba}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 system-ui,"PingFang SC",sans-serif}
+.bar{max-width:1440px;margin:0 auto;padding:14px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bar h1{font-size:18px;margin:0}
+button{min-height:40px;padding:8px 14px;border-radius:12px;border:1px solid var(--border);background:#fff;font-weight:600;cursor:pointer}
+button[aria-pressed=true]{background:var(--fg);color:#fff8d7}
+.stage{position:relative;width:100%;height:calc(100dvh - 70px);min-height:300px;background:#fffdf3;border-top:1px solid var(--border)}
+.host{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.host iframe{border:0;background:#fff}
+.note{position:absolute;left:12px;bottom:10px;font-size:11px;color:#796f91;background:#fffdf3;padding:6px 10px;border-radius:10px;border:1px solid var(--border);z-index:5}
+</style>
+</head>
+<body>
+<div class="bar">
+  <h1>课堂承载 spike · 宿主（web-view/iframe）</h1>
+  <button id="v360" data-w="360">360(手机)</button>
+  <button id="v390" data-w="390">390(手机)</button>
+  <button id="v820" data-w="820">820(平板)</button>
+  <button id="v1440" data-w="1440">1440(桌面)</button>
+  <button id="reload">重新加载</button>
+</div>
+<div class="stage">
+  <div class="host" id="host"></div>
+  <div class="note" id="note">当前视口：<span id="vp">--</span> · iframe sandbox（无 allow-same-origin）· keep-alive pool</div>
+</div>
+<script src="spike.js"></script>
+</body>
+</html>

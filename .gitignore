@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.hypothesis/
+
+# Virtual envs / tooling
+.venv/
+venv/
+
+# Local config & secrets — never commit real values; use .env.example as template
+.env
+
+# Runtime data (local-disk artifact store, dev only)
+data/
+
+# Frontend build artifacts (player)
+node_modules/
+dist/
+test-results/
+playwright-report/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+
+# E2E-Test-Agent 归档产物
+.e2e/
+
+# Research clones (OpenMAIC/DeepTutor) — keep report, ignore vendored repos
+docs/memory/research/openmaic/
+docs/memory/research/deeptutor/
+
+.od-skills/
+.opencode/
+
+.workbuddy/
+.zcode/
+
+# D7-D8 smoke 产物（截图/日志不入库）
+smoke-*.png
+*.log
+
+# D11-D12 录制临时产物
+.gif-frames/
+.gif-video/
+
+# 构建期拷入包内的 skill 资产（真源在仓库根 teaching-skills/）
+packages/aiedu-core/aiedu_core/teaching_skills/
+
+# 本地 AI 工具目录（含疑似凭据/端口状态文件，不入库）
+.superpowers/

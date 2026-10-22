@@ -1,0 +1,243 @@
+{
+  "schema_version": "2.0",
+  "lesson_id": "make-ten-16-plus-8",
+  "revision": 1,
+  "teaching_request": {
+    "kind": "problem",
+    "content": "16+8"
+  },
+  "curriculum_context": {
+    "stage": "primary",
+    "grade": 1
+  },
+  "learning_objectives": [
+    {
+      "id": "lo-make-ten",
+      "description": "用凑十法计算16+8"
+    }
+  ],
+  "domain_models": [
+    {
+      "id": "m-arithmetic",
+      "domain": "arithmetic",
+      "plugin_version": "0.1.0"
+    }
+  ],
+  "teaching_design": {
+    "modes": [
+      "引导"
+    ],
+    "strategy_refs": [
+      "make_ten@0.1.0"
+    ],
+    "skill_refs": [
+      "make-ten"
+    ]
+  },
+  "verification": {
+    "verified": true,
+    "verifier_version": "0.1.0",
+    "normalized_problem_hash": null,
+    "assumptions": [],
+    "claims": [
+      {
+        "id": "arithmetic",
+        "statement": "",
+        "status": "verified",
+        "method": "精确计算"
+      }
+    ],
+    "covered_claim_ids": [
+      "arithmetic"
+    ],
+    "report_ref": null,
+    "mode": "math_verified_applicable"
+  },
+  "initial_states": {
+    "m-arithmetic": {
+      "left": 16,
+      "right": 8,
+      "transferred": 0
+    }
+  },
+  "operations": [
+    {
+      "id": "arithmetic.transfer_units"
+    },
+    {
+      "id": "arithmetic.group_total"
+    }
+  ],
+  "activity_graph": [
+    {
+      "id": "find-complement",
+      "type": "predict",
+      "objective_refs": [],
+      "model_refs": [],
+      "representation_refs": [],
+      "completion_refs": [],
+      "next_ids": [
+        "find-source"
+      ],
+      "prompt": "小兔想装满一篮10颗莓果，它现在有8颗，还差几颗？",
+      "response": {
+        "kind": "number",
+        "unit": null,
+        "allow_expression": false,
+        "expected": null,
+        "correct_index": null
+      },
+      "gate": {
+        "mode": "require_attempt",
+        "max_assists": 3
+      },
+      "assistance": [
+        "想想10的补数：10-8=?"
+      ],
+      "on_correct": [],
+      "on_incorrect": null,
+      "locked": true
+    },
+    {
+      "id": "find-source",
+      "type": "predict",
+      "objective_refs": [],
+      "model_refs": [],
+      "representation_refs": [],
+      "completion_refs": [],
+      "next_ids": [
+        "find-sum"
+      ],
+      "prompt": "小熊有16颗莓果，借给谁、借几颗，能让小兔凑满一篮10颗？",
+      "response": {
+        "kind": "number",
+        "unit": null,
+        "allow_expression": false,
+        "expected": null,
+        "correct_index": null
+      },
+      "gate": {
+        "mode": "require_attempt",
+        "max_assists": 3
+      },
+      "assistance": [
+        "拆出的2颗要搬到小兔那边去。"
+      ],
+      "on_correct": [
+        "arithmetic.transfer_units"
+      ],
+      "on_incorrect": null,
+      "locked": true
+    },
+    {
+      "id": "find-sum",
+      "type": "predict",
+      "objective_refs": [],
+      "model_refs": [],
+      "representation_refs": [],
+      "completion_refs": [],
+      "next_ids": [
+        "replay"
+      ],
+      "prompt": "现在两篮莓果合起来是多少颗？",
+      "response": {
+        "kind": "number",
+        "unit": null,
+        "allow_expression": false,
+        "expected": null,
+        "correct_index": null
+      },
+      "gate": {
+        "mode": "require_attempt",
+        "max_assists": 3
+      },
+      "assistance": [
+        "先看14和10分别是多少，再合起来。"
+      ],
+      "on_correct": [
+        "arithmetic.group_total"
+      ],
+      "on_incorrect": null,
+      "locked": true
+    },
+    {
+      "id": "replay",
+      "type": "observe",
+      "objective_refs": [],
+      "model_refs": [],
+      "representation_refs": [],
+      "completion_refs": [],
+      "next_ids": [
+        "transfer-practice"
+      ],
+      "narration": "",
+      "locked": true
+    },
+    {
+      "id": "transfer-practice",
+      "type": "predict",
+      "objective_refs": [],
+      "model_refs": [],
+      "representation_refs": [],
+      "completion_refs": [],
+      "next_ids": [
+        "__end__"
+      ],
+      "prompt": "试试这题：27+6怎么算？（先自己想一想）",
+      "response": {
+        "kind": "number",
+        "unit": null,
+        "allow_expression": false,
+        "expected": null,
+        "correct_index": null
+      },
+      "gate": {
+        "mode": "require_attempt",
+        "max_assists": 3
+      },
+      "assistance": [
+        "6的补数是4，从27里拆出4。"
+      ],
+      "on_correct": [],
+      "on_incorrect": null,
+      "locked": true
+    }
+  ],
+  "assessment": [
+    {
+      "id": "assess-sum",
+      "objective_refs": [
+        "lo-make-ten"
+      ],
+      "evidence_kind": "numeric_answer",
+      "rubric_refs": []
+    }
+  ],
+  "representations": [
+    {
+      "id": "rep-blocks",
+      "model_refs": [
+        "m-arithmetic"
+      ],
+      "kind": "diagram_2d",
+      "adapter_version": null
+    }
+  ],
+  "render": {
+    "runtime_version": "0.1.0",
+    "representation_adapter_versions": {},
+    "asset_manifest_ref": null,
+    "layout_strategy": "responsive"
+  },
+  "presentation": {
+    "age_band": "lower_primary",
+    "visual_theme": "storybook",
+    "scene_metaphor": "berry_basket",
+    "feedback_tone": "encouraging",
+    "motion_style": "playful",
+    "interaction_affordances": [
+      "type",
+      "tap"
+    ]
+  }
+}

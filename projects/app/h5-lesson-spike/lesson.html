@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>课堂 H5（逻辑视口 1280×720）</title>
+<style>
+/* 固定逻辑视口：所有布局按 1280×720 设计，宿主 scale 适配 */
+:root{--fg:#1d1836;--bg:#fff8d7;--accent:#ff6b00;--surface:#fff;--border:#eadfba}
+*{box-sizing:border-box}
+html,body{margin:0;width:1280px;height:720px;overflow:hidden;background:var(--bg);color:var(--fg);font:22px/1.5 system-ui,"PingFang SC",sans-serif}
+.scene{width:1280px;height:720px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;position:relative}
+.prompt{font-size:34px;font-weight:750;max-width:900px;text-align:center}
+.tray{display:flex;gap:22px}
+.token{width:120px;height:120px;border-radius:26px;border:3px solid var(--fg);background:#ffef9f;display:grid;place-items:center;font-size:44px;font-weight:800;cursor:pointer;transition:transform .45s cubic-bezier(.2,.8,.2,1),background .3s}
+.token.selected{background:var(--accent);transform:translateY(-14px) rotate(3deg)}
+.feedback{font-size:26px;min-height:40px}
+.feedback.good{color:#2e9d57}
+.burst{position:absolute;width:26px;height:26px;border-radius:50%;background:var(--accent);pointer-events:none}
+.speech{position:absolute;left:40px;bottom:34px;font-size:20px;color:#4c426c}
+.source-tag{position:absolute;right:40px;top:30px;font-size:16px;color:#796f91}
+</style>
+</head>
+<body>
+<div class="scene">
+  <div class="source-tag">本课方法：推荐 · 凑十法</div>
+  <div class="prompt">8 加几等于 10 呢？点一点正确的补数。</div>
+  <div class="tray" id="tray">
+    <button class="token" data-v="1">1</button>
+    <button class="token" data-v="2">2</button>
+    <button class="token" data-v="3">3</button>
+    <button class="token" data-v="4">4</button>
+  </div>
+  <div class="feedback" id="fb" role="status" aria-live="polite"></div>
+  <div class="speech" id="speech">先自己想一想，再点一点。</div>
+</div>
+<script src="lesson.js"></script>
+</body>
+</html>

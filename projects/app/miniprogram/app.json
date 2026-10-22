@@ -1,0 +1,26 @@
+{
+  "pages": [
+    "pages/child/home/index",
+    "pages/child/lesson/index",
+    "pages/child/companion/index",
+    "pages/child/growth/index",
+    "pages/parent/home/index",
+    "pages/parent/report/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "数芽",
+    "navigationBarBackgroundColor": "#fff8d7",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#fff8d7"
+  },
+  "tabBar": {
+    "color": "#796f91",
+    "selectedColor": "#1d1836",
+    "list": [
+      { "pagePath": "pages/child/home/index", "text": "学习" },
+      { "pagePath": "pages/child/companion/index", "text": "伙伴" },
+      { "pagePath": "pages/child/growth/index", "text": "成长" }
+    ]
+  },
+  "sitemapLocation": "sitemap.json"
+}

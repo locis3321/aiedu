@@ -1,0 +1,19 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "aiedu": {
+      "type": "local",
+      "enabled": true,
+      "command": [
+        "D:/work/aiedu/packages/aiedu-mcp/.venv/Scripts/python.exe",
+        "-m",
+        "aiedu_mcp.server",
+        "--transport",
+        "stdio"
+      ],
+      "environment": {
+        "AIEDU_PLAYER_URL": "http://127.0.0.1:8130"
+      }
+    }
+  }
+}

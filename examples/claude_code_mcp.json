@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "aiedu": {
+      "command": "uvx",
+      "args": ["aiedu-mcp"],
+      "env": {
+        "AIEDU_USAGE_LOG": "D:/work/aiedu/.aiedu-usage.jsonl",
+        "AIEDU_PLAYER_URL": "http://127.0.0.1:8130"
+      }
+    },
+    "aiedu-local": {
+      "command": "D:/work/aiedu/packages/aiedu-mcp/.venv/Scripts/python.exe",
+      "args": ["-m", "aiedu_mcp.server", "--transport", "stdio"],
+      "env": {
+        "AIEDU_USAGE_LOG": "D:/work/aiedu/.aiedu-usage.jsonl",
+        "AIEDU_PLAYER_URL": "http://127.0.0.1:8130"
+      }
+    }
+  }
+}

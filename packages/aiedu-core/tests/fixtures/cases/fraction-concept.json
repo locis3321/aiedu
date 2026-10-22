@@ -1,0 +1,90 @@
+{
+  "schema_version": "2.0",
+  "lesson_id": "fraction-concept",
+  "revision": 1,
+  "teaching_request": {
+    "kind": "concept",
+    "content": "分数的意义：整体与部分",
+    "grade": 3
+  },
+  "curriculum_context": {
+    "stage": "primary",
+    "grade": 3
+  },
+  "learning_objectives": [
+    {
+      "id": "lo1",
+      "description": "理解分数表示整体中的一部分"
+    }
+  ],
+  "domain_models": [
+    {
+      "id": "m1",
+      "domain": "concept",
+      "plugin_version": "0.1.0"
+    }
+  ],
+  "teaching_design": {
+    "modes": [
+      "讲授"
+    ]
+  },
+  "verification": {
+    "verified": true,
+    "verifier_version": "0.1.0",
+    "assumptions": [],
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "结论成立",
+        "status": "verified",
+        "method": "精确计算"
+      }
+    ],
+    "covered_claim_ids": [
+      "c1"
+    ]
+  },
+  "initial_states": {},
+  "operations": [],
+  "activity_graph": [
+    {
+      "id": "n1",
+      "type": "observe",
+      "narration": "把一张饼平均分成4份，每份是它的四分之一。",
+      "next_ids": [
+        "n2"
+      ]
+    },
+    {
+      "id": "n2",
+      "type": "observe",
+      "narration": "平均分是关键：不平均的份不能直接叫分数。",
+      "next_ids": [
+        "__end__"
+      ]
+    }
+  ],
+  "assessment": [
+    {
+      "id": "a1",
+      "objective_refs": [
+        "lo1"
+      ],
+      "evidence_kind": "numeric_answer"
+    }
+  ],
+  "representations": [
+    {
+      "id": "r1",
+      "model_refs": [
+        "m1"
+      ],
+      "kind": "symbolic"
+    }
+  ],
+  "render": {
+    "runtime_version": "0.1.0",
+    "layout_strategy": "responsive"
+  }
+}

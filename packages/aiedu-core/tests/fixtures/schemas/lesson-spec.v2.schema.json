@@ -1,0 +1,1655 @@
+{
+  "$defs": {
+    "AssessmentItem": {
+      "description": "按学习目标定义评价证据、答案规则或论证量规。",
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "objective_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Objective Refs",
+          "type": "array"
+        },
+        "evidence_kind": {
+          "enum": [
+            "numeric_answer",
+            "expression",
+            "classification",
+            "construction",
+            "proof_step",
+            "explanation",
+            "dataset"
+          ],
+          "title": "Evidence Kind",
+          "type": "string"
+        },
+        "rubric_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Rubric Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "evidence_kind"
+      ],
+      "title": "AssessmentItem",
+      "type": "object"
+    },
+    "ClaimEvidence": {
+      "description": "单条数学主张的核验证据。",
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "statement": {
+          "minLength": 1,
+          "title": "Statement",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "refuted",
+            "inconclusive",
+            "requires_review"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "method": {
+          "description": "证据类型：精确计算 / 形式推导 / 数值实验 / 教研审核等",
+          "minLength": 1,
+          "title": "Method",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "statement",
+        "status",
+        "method"
+      ],
+      "title": "ClaimEvidence",
+      "type": "object"
+    },
+    "ConstructNode": {
+      "description": "构造节点：完成满足约束的构造（几何作图、表达式构造等）。",
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "construct",
+          "title": "Type",
+          "type": "string"
+        },
+        "objective_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Objective Refs",
+          "type": "array"
+        },
+        "model_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Model Refs",
+          "type": "array"
+        },
+        "representation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Representation Refs",
+          "type": "array"
+        },
+        "completion_refs": {
+          "description": "完成条件引用的 assessment id",
+          "items": {
+            "type": "string"
+          },
+          "title": "Completion Refs",
+          "type": "array"
+        },
+        "next_ids": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "后继 step ID；None 或 ['__end__'] 表示结束",
+          "title": "Next Ids"
+        },
+        "prompt": {
+          "minLength": 1,
+          "title": "Prompt",
+          "type": "string"
+        },
+        "response": {
+          "discriminator": {
+            "mapping": {
+              "choice": "#/$defs/ResponseChoice",
+              "construction": "#/$defs/ResponseConstruction",
+              "dataset": "#/$defs/ResponseDataset",
+              "explanation": "#/$defs/ResponseExplanation",
+              "expression": "#/$defs/ResponseExpression",
+              "manipulation": "#/$defs/ResponseManipulation",
+              "number": "#/$defs/ResponseNumber",
+              "proof_step": "#/$defs/ResponseProofStep"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ResponseChoice"
+            },
+            {
+              "$ref": "#/$defs/ResponseNumber"
+            },
+            {
+              "$ref": "#/$defs/ResponseExpression"
+            },
+            {
+              "$ref": "#/$defs/ResponseConstruction"
+            },
+            {
+              "$ref": "#/$defs/ResponseManipulation"
+            },
+            {
+              "$ref": "#/$defs/ResponseProofStep"
+            },
+            {
+              "$ref": "#/$defs/ResponseExplanation"
+            },
+            {
+              "$ref": "#/$defs/ResponseDataset"
+            }
+          ],
+          "title": "Response"
+        },
+        "gate": {
+          "$ref": "#/$defs/Gate"
+        },
+        "on_correct": {
+          "items": {
+            "type": "string"
+          },
+          "title": "On Correct",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "prompt",
+        "response",
+        "gate"
+      ],
+      "title": "ConstructNode",
+      "type": "object"
+    },
+    "DomainModelDef": {
+      "description": "领域模型声明：带领域名与插件版本。",
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "domain": {
+          "minLength": 1,
+          "title": "Domain",
+          "type": "string"
+        },
+        "plugin_version": {
+          "minLength": 1,
+          "title": "Plugin Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "domain",
+        "plugin_version"
+      ],
+      "title": "DomainModelDef",
+      "type": "object"
+    },
+    "ExplainNode": {
+      "description": "解释节点：开放回答保留量规与不确定性，不强行压成单一布尔正确。",
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "explain",
+          "title": "Type",
+          "type": "string"
+        },
+        "objective_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Objective Refs",
+          "type": "array"
+        },
+        "model_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Model Refs",
+          "type": "array"
+        },
+        "representation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Representation Refs",
+          "type": "array"
+        },
+        "completion_refs": {
+          "description": "完成条件引用的 assessment id",
+          "items": {
+            "type": "string"
+          },
+          "title": "Completion Refs",
+          "type": "array"
+        },
+        "next_ids": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "后继 step ID；None 或 ['__end__'] 表示结束",
+          "title": "Next Ids"
+        },
+        "prompt": {
+          "minLength": 1,
+          "title": "Prompt",
+          "type": "string"
+        },
+        "rubric_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Rubric Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "prompt"
+      ],
+      "title": "ExplainNode",
+      "type": "object"
+    },
+    "Gate": {
+      "description": "解锁门槛：由教学目标决定，不强制全课预测优先。",
+      "properties": {
+        "mode": {
+          "enum": [
+            "require_attempt",
+            "require_correct_or_assisted",
+            "learner_continue",
+            "exploration_condition"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "max_assists": {
+          "default": 3,
+          "minimum": 0,
+          "title": "Max Assists",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "mode"
+      ],
+      "title": "Gate",
+      "type": "object"
+    },
+    "LearningObjective": {
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "description"
+      ],
+      "title": "LearningObjective",
+      "type": "object"
+    },
+    "ManipulateNode": {
+      "description": "操作节点：拖动滑块/参数等可操作探索。",
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "manipulate",
+          "title": "Type",
+          "type": "string"
+        },
+        "objective_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Objective Refs",
+          "type": "array"
+        },
+        "model_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Model Refs",
+          "type": "array"
+        },
+        "representation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Representation Refs",
+          "type": "array"
+        },
+        "completion_refs": {
+          "description": "完成条件引用的 assessment id",
+          "items": {
+            "type": "string"
+          },
+          "title": "Completion Refs",
+          "type": "array"
+        },
+        "next_ids": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "后继 step ID；None 或 ['__end__'] 表示结束",
+          "title": "Next Ids"
+        },
+        "prompt": {
+          "minLength": 1,
+          "title": "Prompt",
+          "type": "string"
+        },
+        "allowed_actions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Actions",
+          "type": "array"
+        },
+        "gate": {
+          "$ref": "#/$defs/Gate"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "prompt",
+        "gate"
+      ],
+      "title": "ManipulateNode",
+      "type": "object"
+    },
+    "ObserveNode": {
+      "description": "展示概念/例子——无需伪造一道选择题。",
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "observe",
+          "title": "Type",
+          "type": "string"
+        },
+        "objective_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Objective Refs",
+          "type": "array"
+        },
+        "model_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Model Refs",
+          "type": "array"
+        },
+        "representation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Representation Refs",
+          "type": "array"
+        },
+        "completion_refs": {
+          "description": "完成条件引用的 assessment id",
+          "items": {
+            "type": "string"
+          },
+          "title": "Completion Refs",
+          "type": "array"
+        },
+        "next_ids": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "后继 step ID；None 或 ['__end__'] 表示结束",
+          "title": "Next Ids"
+        },
+        "narration": {
+          "minLength": 1,
+          "title": "Narration",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "narration"
+      ],
+      "title": "ObserveNode",
+      "type": "object"
+    },
+    "OperationDef": {
+      "description": "命名空间领域操作，例如 arithmetic.transfer_units。",
+      "properties": {
+        "id": {
+          "description": "命名空间操作 ID，如 arithmetic.transfer_units",
+          "examples": [
+            "arithmetic.transfer_units"
+          ],
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_.]*$",
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "OperationDef",
+      "type": "object"
+    },
+    "PredictNode": {
+      "description": "预测/尝试节点：「先想后看」门槛所在。",
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "predict",
+          "title": "Type",
+          "type": "string"
+        },
+        "objective_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Objective Refs",
+          "type": "array"
+        },
+        "model_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Model Refs",
+          "type": "array"
+        },
+        "representation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Representation Refs",
+          "type": "array"
+        },
+        "completion_refs": {
+          "description": "完成条件引用的 assessment id",
+          "items": {
+            "type": "string"
+          },
+          "title": "Completion Refs",
+          "type": "array"
+        },
+        "next_ids": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "后继 step ID；None 或 ['__end__'] 表示结束",
+          "title": "Next Ids"
+        },
+        "prompt": {
+          "minLength": 1,
+          "title": "Prompt",
+          "type": "string"
+        },
+        "response": {
+          "discriminator": {
+            "mapping": {
+              "choice": "#/$defs/ResponseChoice",
+              "construction": "#/$defs/ResponseConstruction",
+              "dataset": "#/$defs/ResponseDataset",
+              "explanation": "#/$defs/ResponseExplanation",
+              "expression": "#/$defs/ResponseExpression",
+              "manipulation": "#/$defs/ResponseManipulation",
+              "number": "#/$defs/ResponseNumber",
+              "proof_step": "#/$defs/ResponseProofStep"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ResponseChoice"
+            },
+            {
+              "$ref": "#/$defs/ResponseNumber"
+            },
+            {
+              "$ref": "#/$defs/ResponseExpression"
+            },
+            {
+              "$ref": "#/$defs/ResponseConstruction"
+            },
+            {
+              "$ref": "#/$defs/ResponseManipulation"
+            },
+            {
+              "$ref": "#/$defs/ResponseProofStep"
+            },
+            {
+              "$ref": "#/$defs/ResponseExplanation"
+            },
+            {
+              "$ref": "#/$defs/ResponseDataset"
+            }
+          ],
+          "title": "Response"
+        },
+        "gate": {
+          "$ref": "#/$defs/Gate"
+        },
+        "assistance": {
+          "description": "提示序列；最后一项为示范出口（示范后标记 assisted）",
+          "items": {
+            "type": "string"
+          },
+          "title": "Assistance",
+          "type": "array"
+        },
+        "on_correct": {
+          "description": "引用已有 action ID（不允许任意状态补丁）；无状态转移时可空",
+          "items": {
+            "type": "string"
+          },
+          "title": "On Correct",
+          "type": "array"
+        },
+        "on_incorrect": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "On Incorrect"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "prompt",
+        "response",
+        "gate"
+      ],
+      "title": "PredictNode",
+      "type": "object"
+    },
+    "ProveNode": {
+      "description": "证明节点：补充论据、判断合法步骤或提交论证。",
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "prove",
+          "title": "Type",
+          "type": "string"
+        },
+        "objective_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Objective Refs",
+          "type": "array"
+        },
+        "model_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Model Refs",
+          "type": "array"
+        },
+        "representation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Representation Refs",
+          "type": "array"
+        },
+        "completion_refs": {
+          "description": "完成条件引用的 assessment id",
+          "items": {
+            "type": "string"
+          },
+          "title": "Completion Refs",
+          "type": "array"
+        },
+        "next_ids": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "后继 step ID；None 或 ['__end__'] 表示结束",
+          "title": "Next Ids"
+        },
+        "prompt": {
+          "minLength": 1,
+          "title": "Prompt",
+          "type": "string"
+        },
+        "response": {
+          "$ref": "#/$defs/ResponseProofStep"
+        },
+        "gate": {
+          "$ref": "#/$defs/Gate"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "prompt",
+        "response",
+        "gate"
+      ],
+      "title": "ProveNode",
+      "type": "object"
+    },
+    "ReflectNode": {
+      "description": "反思节点：回顾推理步骤或学习过程。",
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "reflect",
+          "title": "Type",
+          "type": "string"
+        },
+        "objective_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Objective Refs",
+          "type": "array"
+        },
+        "model_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Model Refs",
+          "type": "array"
+        },
+        "representation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Representation Refs",
+          "type": "array"
+        },
+        "completion_refs": {
+          "description": "完成条件引用的 assessment id",
+          "items": {
+            "type": "string"
+          },
+          "title": "Completion Refs",
+          "type": "array"
+        },
+        "next_ids": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "后继 step ID；None 或 ['__end__'] 表示结束",
+          "title": "Next Ids"
+        },
+        "prompt": {
+          "minLength": 1,
+          "title": "Prompt",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "prompt"
+      ],
+      "title": "ReflectNode",
+      "type": "object"
+    },
+    "RenderSpec": {
+      "description": "渲染配置：运行时版本、适配器、资源清单、布局策略。",
+      "properties": {
+        "runtime_version": {
+          "minLength": 1,
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "representation_adapter_versions": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Representation Adapter Versions",
+          "type": "object"
+        },
+        "asset_manifest_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Asset Manifest Ref"
+        },
+        "layout_strategy": {
+          "default": "responsive",
+          "description": "布局策略：responsive / fixed；生产门禁按视口检查",
+          "title": "Layout Strategy",
+          "type": "string"
+        }
+      },
+      "required": [
+        "runtime_version"
+      ],
+      "title": "RenderSpec",
+      "type": "object"
+    },
+    "ReplaySpec": {
+      "description": "可回放活动的事件及检查点；保存探究输入与随机种子，不另造演示逻辑。",
+      "properties": {
+        "checkpoints": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Checkpoints",
+          "type": "array"
+        },
+        "random_seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Random Seed"
+        }
+      },
+      "title": "ReplaySpec",
+      "type": "object"
+    },
+    "RepresentationBinding": {
+      "description": "领域模型到符号/图形/图表/表格/文字的绑定。",
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "model_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Model Refs",
+          "type": "array"
+        },
+        "kind": {
+          "enum": [
+            "symbolic",
+            "diagram_2d",
+            "geometry_3d",
+            "chart",
+            "table",
+            "text"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "adapter_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Adapter Version"
+        }
+      },
+      "required": [
+        "id",
+        "kind"
+      ],
+      "title": "RepresentationBinding",
+      "type": "object"
+    },
+    "ResponseChoice": {
+      "properties": {
+        "kind": {
+          "const": "choice",
+          "title": "Kind",
+          "type": "string"
+        },
+        "options": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 2,
+          "title": "Options",
+          "type": "array"
+        },
+        "correct_index": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "干扰项应基于常见错误模式；开放讨论时可无正确答案",
+          "title": "Correct Index"
+        },
+        "distractors_from": {
+          "description": "关联的常见错误模式 ID",
+          "items": {
+            "type": "string"
+          },
+          "title": "Distractors From",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "options"
+      ],
+      "title": "ResponseChoice",
+      "type": "object"
+    },
+    "ResponseConstruction": {
+      "properties": {
+        "kind": {
+          "const": "construction",
+          "title": "Kind",
+          "type": "string"
+        },
+        "allowed_ops": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Ops",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "ResponseConstruction",
+      "type": "object"
+    },
+    "ResponseDataset": {
+      "properties": {
+        "kind": {
+          "const": "dataset",
+          "title": "Kind",
+          "type": "string"
+        },
+        "n_samples": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "N Samples"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "ResponseDataset",
+      "type": "object"
+    },
+    "ResponseExplanation": {
+      "properties": {
+        "kind": {
+          "const": "explanation",
+          "title": "Kind",
+          "type": "string"
+        },
+        "rubric_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Rubric Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "ResponseExplanation",
+      "type": "object"
+    },
+    "ResponseExpression": {
+      "properties": {
+        "kind": {
+          "const": "expression",
+          "title": "Kind",
+          "type": "string"
+        },
+        "variables": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Variables",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "ResponseExpression",
+      "type": "object"
+    },
+    "ResponseManipulation": {
+      "properties": {
+        "kind": {
+          "const": "manipulation",
+          "title": "Kind",
+          "type": "string"
+        },
+        "allowed_actions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Actions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "ResponseManipulation",
+      "type": "object"
+    },
+    "ResponseNumber": {
+      "properties": {
+        "kind": {
+          "const": "number",
+          "title": "Kind",
+          "type": "string"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "allow_expression": {
+          "default": false,
+          "title": "Allow Expression",
+          "type": "boolean"
+        },
+        "expected": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "程序化计算的期望答案（策略模板填充，不由LLM猜）",
+          "title": "Expected"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "ResponseNumber",
+      "type": "object"
+    },
+    "ResponseProofStep": {
+      "properties": {
+        "kind": {
+          "const": "proof_step",
+          "title": "Kind",
+          "type": "string"
+        },
+        "allowed_rules": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Rules",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "ResponseProofStep",
+      "type": "object"
+    },
+    "RetrieveNode": {
+      "description": "检索/练习节点：选择题作为一种支架，按需使用。",
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "retrieve",
+          "title": "Type",
+          "type": "string"
+        },
+        "objective_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Objective Refs",
+          "type": "array"
+        },
+        "model_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Model Refs",
+          "type": "array"
+        },
+        "representation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Representation Refs",
+          "type": "array"
+        },
+        "completion_refs": {
+          "description": "完成条件引用的 assessment id",
+          "items": {
+            "type": "string"
+          },
+          "title": "Completion Refs",
+          "type": "array"
+        },
+        "next_ids": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "后继 step ID；None 或 ['__end__'] 表示结束",
+          "title": "Next Ids"
+        },
+        "prompt": {
+          "minLength": 1,
+          "title": "Prompt",
+          "type": "string"
+        },
+        "response": {
+          "$ref": "#/$defs/ResponseChoice"
+        },
+        "gate": {
+          "$ref": "#/$defs/Gate"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "prompt",
+        "response",
+        "gate"
+      ],
+      "title": "RetrieveNode",
+      "type": "object"
+    },
+    "TeachingDesign": {
+      "description": "选用教学模式、资源、策略及其适用条件；计算策略可选。",
+      "properties": {
+        "modes": {
+          "description": "教学模式：讲授 / 引导 / 探究 / 论证 / 练习 / 复习等",
+          "items": {
+            "type": "string"
+          },
+          "title": "Modes",
+          "type": "array"
+        },
+        "strategy_refs": {
+          "description": "策略模板引用，如 make_ten@v1；未命中策略时为空",
+          "examples": [
+            [
+              "make_ten@v1"
+            ]
+          ],
+          "items": {
+            "type": "string"
+          },
+          "title": "Strategy Refs",
+          "type": "array"
+        }
+      },
+      "title": "TeachingDesign",
+      "type": "object"
+    },
+    "TeachingRequestConcept": {
+      "properties": {
+        "kind": {
+          "const": "concept",
+          "title": "Kind",
+          "type": "string"
+        },
+        "content": {
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "content"
+      ],
+      "title": "TeachingRequestConcept",
+      "type": "object"
+    },
+    "TeachingRequestMisconception": {
+      "properties": {
+        "kind": {
+          "const": "misconception",
+          "title": "Kind",
+          "type": "string"
+        },
+        "content": {
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "content"
+      ],
+      "title": "TeachingRequestMisconception",
+      "type": "object"
+    },
+    "TeachingRequestObjective": {
+      "properties": {
+        "kind": {
+          "const": "objective",
+          "title": "Kind",
+          "type": "string"
+        },
+        "content": {
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "content"
+      ],
+      "title": "TeachingRequestObjective",
+      "type": "object"
+    },
+    "TeachingRequestProblem": {
+      "properties": {
+        "kind": {
+          "const": "problem",
+          "title": "Kind",
+          "type": "string"
+        },
+        "content": {
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "content"
+      ],
+      "title": "TeachingRequestProblem",
+      "type": "object"
+    },
+    "TeachingRequestTheorem": {
+      "properties": {
+        "kind": {
+          "const": "theorem",
+          "title": "Kind",
+          "type": "string"
+        },
+        "content": {
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "content"
+      ],
+      "title": "TeachingRequestTheorem",
+      "type": "object"
+    },
+    "TeachingRequestTopic": {
+      "properties": {
+        "kind": {
+          "const": "topic",
+          "title": "Kind",
+          "type": "string"
+        },
+        "content": {
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "content"
+      ],
+      "title": "TeachingRequestTopic",
+      "type": "object"
+    },
+    "Verification": {
+      "description": "核验凭据：全部必需主张被覆盖且均为 verified 时才允许 verified=True。",
+      "properties": {
+        "verified": {
+          "default": false,
+          "title": "Verified",
+          "type": "boolean"
+        },
+        "verifier_version": {
+          "minLength": 1,
+          "title": "Verifier Version",
+          "type": "string"
+        },
+        "normalized_problem_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Normalized Problem Hash"
+        },
+        "assumptions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Assumptions",
+          "type": "array"
+        },
+        "claims": {
+          "items": {
+            "$ref": "#/$defs/ClaimEvidence"
+          },
+          "title": "Claims",
+          "type": "array"
+        },
+        "covered_claim_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Covered Claim Ids",
+          "type": "array"
+        },
+        "report_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Report Ref"
+        }
+      },
+      "required": [
+        "verifier_version"
+      ],
+      "title": "Verification",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "const": "2.0",
+      "default": "2.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "lesson_id": {
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "title": "Lesson Id",
+      "type": "string"
+    },
+    "revision": {
+      "minimum": 1,
+      "title": "Revision",
+      "type": "integer"
+    },
+    "teaching_request": {
+      "discriminator": {
+        "mapping": {
+          "concept": "#/$defs/TeachingRequestConcept",
+          "misconception": "#/$defs/TeachingRequestMisconception",
+          "objective": "#/$defs/TeachingRequestObjective",
+          "problem": "#/$defs/TeachingRequestProblem",
+          "theorem": "#/$defs/TeachingRequestTheorem",
+          "topic": "#/$defs/TeachingRequestTopic"
+        },
+        "propertyName": "kind"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/TeachingRequestProblem"
+        },
+        {
+          "$ref": "#/$defs/TeachingRequestConcept"
+        },
+        {
+          "$ref": "#/$defs/TeachingRequestTheorem"
+        },
+        {
+          "$ref": "#/$defs/TeachingRequestTopic"
+        },
+        {
+          "$ref": "#/$defs/TeachingRequestObjective"
+        },
+        {
+          "$ref": "#/$defs/TeachingRequestMisconception"
+        }
+      ],
+      "title": "Teaching Request"
+    },
+    "curriculum_context": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Curriculum Context"
+    },
+    "learning_objectives": {
+      "items": {
+        "$ref": "#/$defs/LearningObjective"
+      },
+      "minItems": 1,
+      "title": "Learning Objectives",
+      "type": "array"
+    },
+    "domain_models": {
+      "items": {
+        "$ref": "#/$defs/DomainModelDef"
+      },
+      "title": "Domain Models",
+      "type": "array"
+    },
+    "teaching_design": {
+      "$ref": "#/$defs/TeachingDesign"
+    },
+    "verification": {
+      "$ref": "#/$defs/Verification"
+    },
+    "initial_states": {
+      "additionalProperties": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "description": "各领域模型初始状态；避免重复派生量",
+      "title": "Initial States",
+      "type": "object"
+    },
+    "operations": {
+      "items": {
+        "$ref": "#/$defs/OperationDef"
+      },
+      "title": "Operations",
+      "type": "array"
+    },
+    "activity_graph": {
+      "items": {
+        "discriminator": {
+          "mapping": {
+            "construct": "#/$defs/ConstructNode",
+            "explain": "#/$defs/ExplainNode",
+            "manipulate": "#/$defs/ManipulateNode",
+            "observe": "#/$defs/ObserveNode",
+            "predict": "#/$defs/PredictNode",
+            "prove": "#/$defs/ProveNode",
+            "reflect": "#/$defs/ReflectNode",
+            "retrieve": "#/$defs/RetrieveNode"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/ObserveNode"
+          },
+          {
+            "$ref": "#/$defs/PredictNode"
+          },
+          {
+            "$ref": "#/$defs/ConstructNode"
+          },
+          {
+            "$ref": "#/$defs/ManipulateNode"
+          },
+          {
+            "$ref": "#/$defs/ExplainNode"
+          },
+          {
+            "$ref": "#/$defs/ProveNode"
+          },
+          {
+            "$ref": "#/$defs/RetrieveNode"
+          },
+          {
+            "$ref": "#/$defs/ReflectNode"
+          }
+        ]
+      },
+      "minItems": 1,
+      "title": "Activity Graph",
+      "type": "array"
+    },
+    "assessment": {
+      "items": {
+        "$ref": "#/$defs/AssessmentItem"
+      },
+      "title": "Assessment",
+      "type": "array"
+    },
+    "replay": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ReplaySpec"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "representations": {
+      "items": {
+        "$ref": "#/$defs/RepresentationBinding"
+      },
+      "title": "Representations",
+      "type": "array"
+    },
+    "render": {
+      "$ref": "#/$defs/RenderSpec"
+    }
+  },
+  "required": [
+    "lesson_id",
+    "revision",
+    "teaching_request",
+    "learning_objectives",
+    "teaching_design",
+    "verification",
+    "activity_graph",
+    "render"
+  ],
+  "title": "LessonSpecV2",
+  "type": "object"
+}

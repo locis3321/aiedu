@@ -1,0 +1,29 @@
+[Unit]
+Description=aiedu demo MCP + player（无界面运行形态 v1）
+After=network.target
+
+[Service]
+User=aiedu
+WorkingDirectory=/opt/aiedu
+# 演示档形态：限流开启 + player 同域挂载 + SQLite token 表 + usage 日志 + 公网 URL
+Environment=AIEDU_RATE_LIMIT=1
+Environment=AIEDU_SERVE_PLAYER=1
+Environment=AIEDU_PLAYER_DIST=/opt/aiedu/player_dist
+Environment=AIEDU_USAGE_LOG=/var/lib/aiedu/usage.jsonl
+Environment=AIEDU_TRUST_PROXY=1
+Environment=AIEDU_AUTH_DB=/var/lib/aiedu/aiedu_auth.db
+Environment=AIEDU_PUBLIC_URL=https://demo.example.com
+# 双保险拦 LLM 变量（与启动硬拒绝配合：演示档无 LLM env）
+UnsetEnvironment=DEEPSEEK_API_KEY LLM_BASE_URL LLM_API_KEY LLM_MODEL_NAME
+ExecStart=/opt/aiedu/venv/bin/aiedu-mcp --transport http --host 127.0.0.1 --port 8000
+Restart=on-failure
+RestartSec=5
+# 最小硬化
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/aiedu
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,59 @@
+/* 运营后台样式：视觉合同 = prototype-v4 :root tokens（规格 v2 §8） */
+:root {
+  --bg:#fff8d7; --surface:#fff; --surface-warm:#ffef9f; --fg:#1d1836; --fg-2:#4c426c;
+  --muted:#796f91; --border:#eadfba; --border-soft:#f5eccd; --accent:#ff6b00;
+  --success:#2e9d57; --danger:#e5484d; --soft-green:#edf6ed; --line:1px solid var(--border);
+  --font-body:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --radius:24px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.65 var(--font-body)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.48}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{line-height:1.35;margin:0 0 12px;font-weight:750}
+h1{font-size:28px}h2{font-size:21px}h3{font-size:17px}
+p{margin:0 0 12px}
+small{font-size:12px}
+[hidden]{display:none!important}
+.skip-link{position:fixed;left:16px;top:-80px;z-index:1000;background:var(--fg);color:var(--surface-warm);padding:12px 18px}
+.skip-link:focus{top:10px}
+.topbar{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:20px 28px;gap:16px}
+.brand{display:inline-flex;align-items:center;gap:10px}
+.brand-mark{width:40px;height:40px;background:var(--fg);color:var(--surface-warm);border-radius:13px;display:grid;place-items:center;font-weight:800}
+.brand-name{font-size:20px;font-weight:800}
+.brand-name small{display:block;font-size:10px;font-weight:500;letter-spacing:.5px}
+.layout{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:190px minmax(0,1fr);gap:26px;padding:6px 28px 48px}
+.nav{position:sticky;top:20px;align-self:start;display:grid;gap:4px}
+.nav a{display:flex;align-items:center;gap:10px;min-height:46px;padding:10px 14px;border-radius:14px;font-weight:600;font-size:14px}
+.nav a[aria-current=page]{background:var(--fg);color:var(--surface-warm)}
+.nav a:hover{background:var(--border-soft)}
+.nav .nav-note{margin-top:26px;padding-top:16px;border-top:var(--line);color:var(--muted);font-size:11px}
+.main{min-width:0}
+.page-head{margin-bottom:18px}
+.page-head h1{margin-bottom:4px}
+
+.page-head p{color:#4c426c;font-size:13px;margin:0}
+.panel{background:var(--surface);border:var(--line);border-radius:var(--radius);padding:22px;margin-bottom:16px}
+.panel h2{margin-bottom:14px}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.muted{color:#4c426c}
+.tiny{font-size:11px}
+.button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:9px 16px;border-radius:13px;font-weight:650;border:var(--line);background:#fffdf3}
+.button:hover{background:#f5eccd}
+.button.primary{background:#ff6b00;border-color:#ff6b00}
+.button.danger{border-color:#e5484d}
+.button.small{min-height:36px;padding:5px 11px;font-size:12px}
+.pill{display:inline-flex;align-items:center;gap:5px;background:#fffdf3;padding:3px 10px;border:var(--line);border-radius:99px;font-size:11px}
+.pill.green{background:#edf6ed;border-color:#2e9d57}
+.pill.warm{background:#fff3dd}
+input,select,textarea{width:100%;min-width:0;border:var(--line);border-radius:12px;min-height:44px;background:#fffdf3;padding:9px 12px}
+textarea{resize:vertical}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px 12px;text-align:left;border-bottom:.5pt solid #f5eccd}
+th{color:#796f91;font-weight:650}
+.empty{padding:28px;text-align:center;color:#796f91}
+.error-box{background:#fff0ef;border-left:3px solid #e5484d;padding:12px 16px;border-radius:12px}
+.notice{background:#fff3dd;padding:12px 16px;border-radius:12px;font-size:13px}

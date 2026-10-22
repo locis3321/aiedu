@@ -1,0 +1,109 @@
+{
+  "schema_version": "2.0",
+  "lesson_id": "probability-conditional",
+  "revision": 1,
+  "teaching_request": {
+    "kind": "problem",
+    "content": "袋中有3红2白，不放回取两次，第二次取红的概率？",
+    "grade": 9
+  },
+  "curriculum_context": {
+    "stage": "primary",
+    "grade": 9
+  },
+  "learning_objectives": [
+    {
+      "id": "lo1",
+      "description": "区分条件概率与无条件概率"
+    }
+  ],
+  "domain_models": [
+    {
+      "id": "m1",
+      "domain": "problem",
+      "plugin_version": "0.1.0"
+    }
+  ],
+  "teaching_design": {
+    "modes": [
+      "探究"
+    ]
+  },
+  "verification": {
+    "verified": true,
+    "verifier_version": "0.1.0",
+    "assumptions": [],
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "结论成立",
+        "status": "verified",
+        "method": "精确计算"
+      }
+    ],
+    "covered_claim_ids": [
+      "c1"
+    ]
+  },
+  "initial_states": {},
+  "operations": [],
+  "activity_graph": [
+    {
+      "id": "n1",
+      "type": "predict",
+      "prompt": "先猜一个值，再做100次模拟",
+      "response": {
+        "kind": "dataset",
+        "n_samples": 100
+      },
+      "gate": {
+        "mode": "require_attempt"
+      },
+      "on_correct": [],
+      "next_ids": [
+        "n2"
+      ]
+    },
+    {
+      "id": "n2",
+      "type": "retrieve",
+      "prompt": "第二次取红与第一次取红有关吗？",
+      "response": {
+        "kind": "choice",
+        "options": [
+          "有关，取决于第一次结果",
+          "无关"
+        ],
+        "correct_index": 0
+      },
+      "gate": {
+        "mode": "learner_continue"
+      },
+      "next_ids": [
+        "__end__"
+      ]
+    }
+  ],
+  "assessment": [
+    {
+      "id": "a1",
+      "objective_refs": [
+        "lo1"
+      ],
+      "evidence_kind": "numeric_answer"
+    }
+  ],
+  "representations": [
+    {
+      "id": "r1",
+      "model_refs": [
+        "m1"
+      ],
+      "kind": "symbolic"
+    }
+  ],
+  "render": {
+    "runtime_version": "0.1.0",
+    "layout_strategy": "responsive"
+  }
+}

@@ -1,0 +1,61 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["aiedu_core"]
+
+# teaching-skills 是"零 LLM 覆盖 3 类题型"的资产，必须随包发布：
+# 仓库根是唯一真源，构建时由钩子拷进包内（安装后由 importlib.resources 读取）
+[tool.hatch.build.hooks.custom]
+path = "hatch_build_hook.py"
+
+[project]
+name = "aiedu-core"
+version = "0.1.0"
+description = "数学可信教学引擎内核：SymPy 独立核验 + 教学门禁 + 答案门控（先想后看），输入一道题，输出已核验的 LessonSpec v2"
+readme = { text = "数学可信教学引擎内核：意图识别 → SymPy 核验 → skill 检索 → 规划 → 编译 → 教学门禁。零 LLM 可跑已覆盖题型（凑十法 / 破十法 / 分数等分），未覆盖题型显式 capability gap。", content-type = "text/markdown" }
+license = { text = "Apache-2.0" }
+requires-python = ">=3.12"
+authors = [{ name = "aiedu contributors" }]
+keywords = ["math", "education", "sympy", "llm", "teaching", "mcp"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Education",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "sympy>=1.12",
+    "pydantic>=2.7",
+]
+
+[project.optional-dependencies]
+# LLM 为可选路径：未安装时无 LLM env 的全链路（已覆盖题型）必须可跑
+llm = [
+    "agentscope==2.0.9",
+    "httpx>=0.27",
+]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.23",
+    "jsonschema>=4",
+]
+
+[project.urls]
+Homepage = "https://github.com/locis3321/aiedu"
+Repository = "https://github.com/locis3321/aiedu"
+Issues = "https://github.com/locis3321/aiedu/issues"
+Source = "https://github.com/locis3321/aiedu"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = [
+    "real_llm: tests calling the real LLM provider (external dependency; CI may retry)",
+]

@@ -1,0 +1,120 @@
+{
+  "schema_version": "2.0",
+  "lesson_id": "arithmetic-make-ten",
+  "revision": 1,
+  "teaching_request": {
+    "kind": "problem",
+    "content": "16+8=?",
+    "grade": 1
+  },
+  "curriculum_context": {
+    "stage": "primary",
+    "grade": 1
+  },
+  "learning_objectives": [
+    {
+      "id": "lo1",
+      "description": "用凑十法计算两位数加一位数"
+    }
+  ],
+  "domain_models": [
+    {
+      "id": "m1",
+      "domain": "problem",
+      "plugin_version": "0.1.0"
+    }
+  ],
+  "teaching_design": {
+    "modes": [
+      "引导"
+    ],
+    "strategy_refs": [
+      "make_ten@v1"
+    ]
+  },
+  "verification": {
+    "verified": true,
+    "verifier_version": "0.1.0",
+    "assumptions": [],
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "结论成立",
+        "status": "verified",
+        "method": "精确计算"
+      }
+    ],
+    "covered_claim_ids": [
+      "c1"
+    ]
+  },
+  "initial_states": {},
+  "operations": [
+    {
+      "id": "arithmetic.transfer_units"
+    },
+    {
+      "id": "arithmetic.group_total"
+    }
+  ],
+  "activity_graph": [
+    {
+      "id": "n1",
+      "type": "observe",
+      "narration": "16和8，先看哪个数离10更近？",
+      "next_ids": [
+        "n2"
+      ]
+    },
+    {
+      "id": "n2",
+      "type": "predict",
+      "prompt": "8加几凑成10？",
+      "response": {
+        "kind": "number"
+      },
+      "gate": {
+        "mode": "require_attempt"
+      },
+      "assistance": [
+        "想想10的补数"
+      ],
+      "on_correct": [
+        "arithmetic.transfer_units"
+      ],
+      "next_ids": [
+        "n3"
+      ]
+    },
+    {
+      "id": "n3",
+      "type": "reflect",
+      "prompt": "拆出2后，16变成几？",
+      "next_ids": [
+        "__end__"
+      ]
+    }
+  ],
+  "assessment": [
+    {
+      "id": "a1",
+      "objective_refs": [
+        "lo1"
+      ],
+      "evidence_kind": "numeric_answer"
+    }
+  ],
+  "representations": [
+    {
+      "id": "r1",
+      "model_refs": [
+        "m1"
+      ],
+      "kind": "symbolic"
+    }
+  ],
+  "render": {
+    "runtime_version": "0.1.0",
+    "layout_strategy": "responsive"
+  }
+}

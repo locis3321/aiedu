@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "aiedu": {
+      "command": "uvx",
+      "args": ["aiedu-mcp"],
+      "env": {
+        "LLM_BASE_URL": "你的 LLM Gateway 地址（可选，不配置也可用已覆盖题型）",
+        "LLM_API_KEY": "你的 LLM Key（可选）",
+        "LLM_MODEL_NAME": "你的模型名（可选）"
+      }
+    }
+  }
+}

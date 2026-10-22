@@ -1,0 +1,17 @@
+# aiedu 演示站：MCP Streamable HTTP 与 /player 同域（C7 同域挂载 + Caddy 反代）
+demo.example.com {
+	# MCP 端点：SSE 兼容（flush_interval -1 保险，官方文档确认 SSE 自动刷新）
+	@mcp path /mcp*
+	handle @mcp {
+		reverse_proxy 127.0.0.1:8000 { flush_interval -1 }
+	}
+
+	# 其余（演示页 / /register / /revoke / /player 静态资产）
+	handle {
+		encode zstd gzip
+		@player path /player/*
+		header @player Cache-Control "public, max-age=3600"
+		header /mcp* Cache-Control "no-cache"
+		reverse_proxy 127.0.0.1:8000
+	}
+}

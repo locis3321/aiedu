@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aiedu.local/schemas/lesson-spec.schema.json",
+  "title": "AI Edu LessonSpec",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "id", "audience", "question", "solution", "teachingPlan", "render"],
+  "properties": {
+    "version": { "const": "0.1" },
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "audience": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["grade", "language", "priorKnowledge"],
+      "properties": {
+        "grade": { "type": "integer", "minimum": 1, "maximum": 9 },
+        "language": { "type": "string", "minLength": 2 },
+        "priorKnowledge": { "type": "array", "maxItems": 5, "items": { "type": "string", "minLength": 1 } },
+        "assumption": { "type": "string" }
+      }
+    },
+    "question": { "type": "string", "minLength": 1 },
+    "solution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["answer", "verified", "verificationMethod", "steps"],
+      "properties": {
+        "answer": { "type": "string", "minLength": 1 },
+        "verified": { "const": true },
+        "verificationMethod": { "type": "string", "minLength": 1 },
+        "alternativeApproaches": {
+          "type": "array",
+          "maxItems": 3,
+          "description": "同一道题的其它解法（一题多解），每种标注方法名、思路与适用场景",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "summary", "whenToUse"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "summary": { "type": "string", "minLength": 1 },
+              "expression": { "type": "string" },
+              "whenToUse": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "explanation"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "explanation": { "type": "string", "minLength": 1 },
+              "expression": { "type": "string" },
+              "check": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "teachingPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["objective", "misconceptions", "scenes"],
+      "properties": {
+        "objective": { "type": "string", "minLength": 1 },
+        "misconceptions": { "type": "array", "maxItems": 3, "items": { "type": "string", "minLength": 1 } },
+        "scenes": {
+          "$ref": "#/$defs/scenes"
+        },
+        "approaches": {
+          "type": "array",
+          "maxItems": 3,
+          "description": "一题多解：每种解法是一个完整 5 场景序列，含独立动画与口诀",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "label", "method", "scenes"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "label": { "type": "string", "minLength": 1 },
+              "method": { "type": "string", "minLength": 1 },
+              "whenToUse": { "type": "string" },
+              "mnemonic": { "type": "string" },
+              "scenes": { "$ref": "#/$defs/scenes" }
+            }
+          }
+        }
+      }
+    },
+    "render": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "engine"],
+      "properties": {
+        "mode": { "const": "interactive_html" },
+        "engine": { "enum": ["vanilla_svg", "threejs_local", "diagram"] }
+      }
+    }
+  },
+  "$defs": {
+    "scenes": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "title", "narration", "visual"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["orient", "model", "connect", "check", "summary"] },
+          "title": { "type": "string", "minLength": 1 },
+          "narration": { "type": "string", "minLength": 1 },
+          "expression": { "type": "string" },
+          "visibleMath": { "type": "array", "items": { "type": "string" } },
+          "visual": { "type": "object" },
+          "interaction": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["prompt", "options", "correctIndex", "feedback"],
+            "properties": {
+              "prompt": { "type": "string", "minLength": 1 },
+              "options": { "type": "array", "minItems": 2, "maxItems": 5, "items": { "type": "string" } },
+              "correctIndex": { "type": "integer", "minimum": 0 },
+              "feedback": { "type": "object", "required": ["correct", "incorrect"] }
+            }
+          }
+        }
+      }
+    }
+  }
+}

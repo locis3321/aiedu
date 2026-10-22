@@ -1,0 +1,23 @@
+<view class="card">
+  <view style="font-size:22px;font-weight:750">选择孩子</view>
+  <view wx:if="{{!children.length}}" class="tiny" style="margin-top:6px">暂无孩子档案，请先在家长首页建档。</view>
+  <view
+    wx:for="{{children}}"
+    wx:key="id"
+    data-id="{{item.id}}"
+    bindtap="selectChild"
+    style="border-top:1px solid #f5eccd;padding:14px 0;min-height:48px;display:flex;align-items:center;{{selectedId === item.id ? 'color:#ff6b00;font-weight:700' : ''}}"
+  >{{item.nickname}}（{{item.grade || item.age_group || '未填'}}）{{selectedId === item.id ? ' ✓' : ''}}</view>
+</view>
+<block wx:if="{{selectedId}}">
+  <view class="card">
+    <view style="font-size:22px;font-weight:750">学习报告</view>
+    <view class="tiny" style="margin-top:6px">独立 {{counts.independent}} · 提示后 {{counts.assisted}} · 示范后 {{counts.demonstrated}} · 待观察 {{counts.needs_review}}</view>
+  </view>
+  <view class="card">
+    <view style="font-weight:650">能力评估（证据带，无百分比）</view>
+    <block wx:for="{{dims}}" wx:key="code">
+      <view style="border-top:1px solid #f5eccd;padding:10px 0">{{item.name}}：{{item.level_display}}</view>
+    </block>
+  </view>
+</block>

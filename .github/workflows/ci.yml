@@ -1,0 +1,151 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+# 凭据只来自 Secrets，不进代码
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  # ---- aiedu-core：内核单测（real_llm 用例在无 LLM env 时自动 skip）----
+  core:
+    name: aiedu-core · pytest
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: 安装 aiedu-core
+        run: pip install -e "packages/aiedu-core[dev]"
+      - name: pytest
+        working-directory: packages/aiedu-core
+        run: pytest -q
+
+  # ---- 硬约束断言：独立可见的 job（不淹没在测试堆里）----
+  constraints:
+    name: 硬约束断言（1/2/3）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 安装 aiedu-core
+        run: pip install -e packages/aiedu-core
+      - name: 逐条断言硬约束并打印证据
+        run: python scripts/check_constraints.py
+
+  # ---- aiedu-mcp：工具层单测 + stdio 子进程冒烟 ----
+  mcp:
+    name: aiedu-mcp · pytest + stdio 冒烟
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 安装 aiedu-core 与 aiedu-mcp
+        run: |
+          pip install -e packages/aiedu-core
+          pip install -e "packages/aiedu-mcp[dev]"
+      - name: pytest（含 stdio 子进程协议层冒烟）
+        working-directory: packages/aiedu-mcp
+        run: pytest -q
+
+  # ---- aiedu-player：真实渲染服务 + Playwright（48px / 一屏一任务）----
+  player:
+    name: aiedu-player · Playwright（硬约束 5）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: 安装依赖
+        working-directory: packages/aiedu-player
+        run: npm ci
+      - name: 构建播放器
+        working-directory: packages/aiedu-player
+        run: npm run build
+      - name: 安装 Chromium
+        working-directory: packages/aiedu-player
+        run: npx playwright install --with-deps chromium
+      - name: Playwright（CI 内启动渲染服务跑 ui-rules）
+        working-directory: packages/aiedu-player
+        run: npx playwright test
+
+  # ---- 发布物构建：wheel 能否构建 + twine 校验（不自动上传）----
+  build-dist:
+    name: 构建 wheel 并校验
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 构建并校验两个包的 wheel/sdist
+        run: bash scripts/build_dist.sh
+
+  # ---- 演示档鉴权与配额（D6）：注册 token 路径 + capability_gap 语义不变 ----
+  demo-auth-quota:
+    name: 演示档鉴权与配额
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 安装 aiedu-core 与 aiedu-mcp
+        run: |
+          pip install -e packages/aiedu-core
+          pip install -e "packages/aiedu-mcp[dev]"
+      - name: auth / quota 断言（注册→吊销→限流，全部离线）
+        working-directory: packages/aiedu-mcp
+        run: |
+          python -m pytest tests/test_auth_store.py tests/test_auth_routes.py tests/test_ratelimit.py -q
+      - name: 注册 token 路径下复跑 capability_gap（演示档不得弱化该语义）
+        run: |
+          python - <<'PY'
+          import asyncio
+          from aiedu_mcp.auth import get_auth_store
+          from aiedu_mcp import tools
+          from aiedu_core.strategies import registry
+
+          store = get_auth_store()
+          raw, _ = store.create_token()  # 注册 token（等价 POST /register）
+          assert store.lookup_token(raw) is not None
+          out = tools.generate_lesson("52-37")
+          assert out.get("error") == "capability_gap", out
+          print("capability_gap（注册 token 路径）: PASS")
+          print("覆盖矩阵:", ", ".join(registry.ids()))
+          PY
+
+  # ---- 演示配置（C10）：演示站不得弱化 capability_gap——显式跑断言并打印覆盖矩阵 ----
+  demo-config:
+    name: 演示配置与覆盖矩阵（C10）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 安装
+        run: |
+          pip install -e packages/aiedu-core
+          pip install -e "packages/aiedu-mcp[dev]"
+      - name: 演示页与授权路径断言（无 LLM env 下 capability_gap 必须如实）
+        working-directory: packages/aiedu-mcp
+        run: pytest tests/test_demo.py tests/test_auth_routes.py -q
+      - name: 硬约束 1/2/3 独立断言 + 覆盖矩阵
+        run: |
+          python scripts/check_constraints.py
+          python -c "from aiedu_core.strategies import registry; print('覆盖矩阵:', ', '.join(registry.ids()))"

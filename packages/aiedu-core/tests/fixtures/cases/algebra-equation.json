@@ -1,0 +1,98 @@
+{
+  "schema_version": "2.0",
+  "lesson_id": "algebra-equation",
+  "revision": 1,
+  "teaching_request": {
+    "kind": "problem",
+    "content": "解方程：2x+3=11",
+    "grade": 7
+  },
+  "curriculum_context": {
+    "stage": "primary",
+    "grade": 7
+  },
+  "learning_objectives": [
+    {
+      "id": "lo1",
+      "description": "理解等式两边同加减保持相等"
+    }
+  ],
+  "domain_models": [
+    {
+      "id": "m1",
+      "domain": "problem",
+      "plugin_version": "0.1.0"
+    }
+  ],
+  "teaching_design": {
+    "modes": [
+      "引导"
+    ]
+  },
+  "verification": {
+    "verified": true,
+    "verifier_version": "0.1.0",
+    "assumptions": [],
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "结论成立",
+        "status": "verified",
+        "method": "精确计算"
+      }
+    ],
+    "covered_claim_ids": [
+      "c1"
+    ]
+  },
+  "initial_states": {},
+  "operations": [
+    {
+      "id": "algebra.add_both_sides"
+    }
+  ],
+  "activity_graph": [
+    {
+      "id": "n1",
+      "type": "construct",
+      "prompt": "怎样把3从左边去掉？",
+      "response": {
+        "kind": "expression",
+        "variables": [
+          "x"
+        ]
+      },
+      "gate": {
+        "mode": "require_attempt"
+      },
+      "on_correct": [
+        "algebra.add_both_sides"
+      ],
+      "next_ids": [
+        "__end__"
+      ]
+    }
+  ],
+  "assessment": [
+    {
+      "id": "a1",
+      "objective_refs": [
+        "lo1"
+      ],
+      "evidence_kind": "numeric_answer"
+    }
+  ],
+  "representations": [
+    {
+      "id": "r1",
+      "model_refs": [
+        "m1"
+      ],
+      "kind": "symbolic"
+    }
+  ],
+  "render": {
+    "runtime_version": "0.1.0",
+    "layout_strategy": "responsive"
+  }
+}

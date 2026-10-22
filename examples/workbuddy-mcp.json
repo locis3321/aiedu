@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "aiedu": {
+      "type": "stdio",
+      "command": "D:/work/aiedu/packages/aiedu-mcp/.venv/Scripts/python.exe",
+      "args": ["-m", "aiedu_mcp.server", "--transport", "stdio"],
+      "env": {
+        "AIEDU_PLAYER_URL": "http://127.0.0.1:8130"
+      }
+    }
+  }
+}

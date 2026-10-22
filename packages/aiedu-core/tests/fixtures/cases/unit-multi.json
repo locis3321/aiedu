@@ -1,0 +1,107 @@
+{
+  "schema_version": "2.0",
+  "lesson_id": "unit-multi",
+  "revision": 1,
+  "teaching_request": {
+    "kind": "topic",
+    "content": "'比与比例'单元复习"
+  },
+  "curriculum_context": {
+    "stage": "primary",
+    "grade": 1
+  },
+  "learning_objectives": [
+    {
+      "id": "lo1",
+      "description": "综合运用比与比例解决实际问题"
+    }
+  ],
+  "domain_models": [
+    {
+      "id": "m1",
+      "domain": "topic",
+      "plugin_version": "0.1.0"
+    }
+  ],
+  "teaching_design": {
+    "modes": [
+      "复习"
+    ]
+  },
+  "verification": {
+    "verified": true,
+    "verifier_version": "0.1.0",
+    "assumptions": [],
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "结论成立",
+        "status": "verified",
+        "method": "精确计算"
+      }
+    ],
+    "covered_claim_ids": [
+      "c1"
+    ]
+  },
+  "initial_states": {},
+  "operations": [],
+  "activity_graph": [
+    {
+      "id": "n1",
+      "type": "retrieve",
+      "prompt": "比的基本性质是什么？",
+      "response": {
+        "kind": "choice",
+        "options": [
+          "前项后项同乘除同一个不为0的数，比值不变",
+          "前项加后项同一个数，比值不变"
+        ],
+        "correct_index": 0
+      },
+      "gate": {
+        "mode": "learner_continue"
+      },
+      "next_ids": [
+        "n2"
+      ]
+    },
+    {
+      "id": "n2",
+      "type": "predict",
+      "prompt": "先估一估：32:24化简后是几比几？",
+      "response": {
+        "kind": "number"
+      },
+      "gate": {
+        "mode": "require_attempt"
+      },
+      "on_correct": [],
+      "next_ids": [
+        "__end__"
+      ]
+    }
+  ],
+  "assessment": [
+    {
+      "id": "a1",
+      "objective_refs": [
+        "lo1"
+      ],
+      "evidence_kind": "numeric_answer"
+    }
+  ],
+  "representations": [
+    {
+      "id": "r1",
+      "model_refs": [
+        "m1"
+      ],
+      "kind": "symbolic"
+    }
+  ],
+  "render": {
+    "runtime_version": "0.1.0",
+    "layout_strategy": "responsive"
+  }
+}

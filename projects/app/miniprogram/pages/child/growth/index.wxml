@@ -1,0 +1,12 @@
+<view class="card">
+  <view style="font-size:22px;font-weight:750">成长花园</view>
+  <view class="tiny" style="margin-top:6px">{{summary}}</view>
+</view>
+<view class="card">
+  <view style="font-weight:650">学习足迹</view>
+  <block wx:for="{{items}}" wx:key="evidence_id">
+    <view style="border-top:1px solid #f5eccd;padding:12px 0">
+      {{item.kind}} · {{item.level_display}}
+    </view>
+  </block>
+</view>

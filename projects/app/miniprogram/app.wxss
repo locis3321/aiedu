@@ -1,0 +1,24 @@
+page {
+  background: #fff8d7;
+  color: #1d1836;
+  font: 15px/1.6 "PingFang SC", sans-serif;
+}
+.card {
+  background: #fff;
+  border: 1px solid #eadfba;
+  border-radius: 24px;
+  padding: 22px;
+  margin: 14px;
+}
+.btn {
+  min-height: 48px;
+  border-radius: 14px;
+  background: #ff6b00;
+  color: #1d1836;
+  font-weight: 650;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn.secondary { background: #fffdf3; border: 1px solid #eadfba; }
+.tiny { font-size: 12px; color: #4c426c; }

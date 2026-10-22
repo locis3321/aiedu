@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小熊的莓果篮：凑十法（16+8）</title>
+  <style>
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      margin: 0; padding: 16px;
+      background: linear-gradient(180deg, #fff6e9 0%, #ffe9d6 100%);
+      color: #5b4636;
+    }
+    #app { max-width: 960px; margin: 0 auto; }
+    h1 { font-size: clamp(22px, 4vw, 30px); color: #a3552e; margin-bottom: 4px; }
+    .subtitle { font-size: 15px; color: #a98a6f; margin-bottom: 12px; }
+    .panel {
+      background: #fffdf8; border-radius: 20px; padding: 18px;
+      margin-bottom: 12px; box-shadow: 0 4px 14px rgba(163,85,46,.12);
+      border: 2px solid #f5d9b8;
+    }
+    /* 莓果：圆形渐变 + 高光，像一颗颗小果子 */
+    .unit-block {
+      display: inline-block; width: 30px; height: 30px;
+      border-radius: 50%; margin: 3px;
+      background: radial-gradient(circle at 32% 28%, #ffb3a0, #ff6f5e 62%, #e34f3f);
+      box-shadow: inset -2px -3px 4px rgba(160,40,30,.35), inset 2px 2px 3px rgba(255,255,255,.45);
+      position: relative;
+    }
+    .unit-block::after {
+      content: ""; position: absolute; top: -3px; left: 50%;
+      width: 6px; height: 5px; margin-left: -3px;
+      background: #7cb342; border-radius: 50% 50% 50% 0;
+      transform: rotate(-20deg);
+    }
+    .block-left { background: radial-gradient(circle at 32% 28%, #ffc59a, #ff9a4d 62%, #e07b2e); }
+    .block-right { background: radial-gradient(circle at 32% 28%, #ffb3a0, #ff6f5e 62%, #e34f3f); }
+    .block-in-transit { background: radial-gradient(circle at 32% 28%, #c9b1ff, #9b59b6 62%, #7d3fa0); }
+    /* 篮子容器 */
+    .group-basket {
+      display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
+      min-height: 52px; padding: 8px; border-radius: 14px;
+      border: none; background: #fbe8cf;
+      box-shadow: inset 0 -6px 0 rgba(163,85,46,.15), inset 0 -12px 0 rgba(163,85,46,.08);
+      margin-bottom: 10px; min-width: 44px;
+    }
+    .group-label { font-weight: 700; font-size: 13px; color: #a3552e; margin-right: 8px; }
+    button {
+      min-width: 44px; min-height: 44px; font-size: 16px;
+      border-radius: 14px; border: none; cursor: pointer;
+      background: #fff3e2; color: #a3552e;
+      box-shadow: inset -1px -2px 0 rgba(163,85,46,.12);
+      padding: 0 14px;
+    }
+    button:hover { background: #ffe9cf; }
+    button.primary { background: #ff8a5c; color: #fff; }
+    button.primary:hover { background: #f97a48; }
+    #answer-input {
+      min-height: 44px; font-size: 18px; width: 130px;
+      border-radius: 14px; border: 2px solid #f5d9b8;
+      padding: 0 10px; background: #fffdf8; color: #5b4636;
+    }
+    #feedback {
+      min-height: 44px; display: flex; align-items: center;
+      font-size: 17px; color: #5b4636;
+    }
+    @media (max-width: 600px) {
+      body { padding: 8px; }
+      .panel { padding: 12px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .unit-block { transition: none !important; }
+    }
+    .theme-badge {
+      display: inline-block; background:#ffe9cf; color:#a3552e;
+      border-radius:999px; padding:2px 10px; font-size:12px;
+    }
+    [data-theme="berry-basket"] .unit-block::after { content:none; }
+    [data-theme="berry-basket"] .group-basket { background:#fbe8cf; }
+    .berry-leaf { display:none; }
+    [data-theme="berry-basket"] .berry-leaf { display:none; }
+    .star-energy { display:none; }
+    [data-theme="star-energy"] .star-energy { display:none; }
+    [data-theme="star-energy"] .unit-block {
+      clip-path: polygon(50% 0%,61%35%,98%35%,68%57%,79%91%,50%70%,21%91%,32%57%,2%35%,39%35%);
+      border-radius:0; box-shadow:none;
+      background:#ffd54f;
+    }
+    [data-theme="star-energy"] .unit-block::after { content:none; }
+    [data-theme="star-energy"] .group-basket { background:#fff8dc; box-shadow:none; }
+    [data-theme="star-energy"] .group-label { color:#c79100; }
+    [data-theme="star-energy"] body { background:#fffde7 !important; }
+    [data-theme="star-energy"] h1 { color:#c79100 !important; }
+    [data-theme="star-energy"] button.primary { background:#ffc107 !important; color:#5d4037 !important; }
+</style>
+</head>
+<body>
+<div id="app">
+<h1>🐻小熊的莓果篮</h1>
+<div class="subtitle">帮小熊和小兔分一分莓果，看看怎么算得更轻松～</div>
+<div class="panel">
+<div id="question" style="font-size:20px;margin-bottom:8px;">16 + 8 = ?</div>
+<div id="prompt" style="font-size:17px;margin-bottom:8px;"></div>
+<div id="blocks-stage"></div>
+<div id="controls" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+<input id="answer-input" type="number" inputmode="numeric" placeholder="输入答案">
+<button id="submit-btn" class="primary">提交✨</button>
+<button id="continue-btn" style="display:none;">继续➡️</button>
+<button id="hint-btn">提示💡</button>
+<button id="replay-btn">重播🔁</button>
+<button id="reset-btn">重置🔄</button>
+</div>
+<div id="feedback"></div>
+<div id="status" style="font-size:13px;color:#b09a84;margin-top:8px;"></div>
+</div>
+</div>
+<script src="/dist/player.js"></script>
+<script>
+(async function () {
+const spec = await (await fetch("/demo/make-ten-16-plus-8.json")).json();
+const mount = document.getElementById("blocks-stage");
+const handle = window.AIEduPlayer.loadSpec(spec, mount);
+const runtime = handle.runtime;
+const promptEl = document.getElementById("prompt");
+const feedbackEl = document.getElementById("feedback");
+const statusEl = document.getElementById("status");
+const input = document.getElementById("answer-input");
+
+// presentation.theme → data-theme（受控主题切换；默认 berry_basket）
+const theme = (spec.presentation && spec.presentation.scene_metaphor) || "berry_basket";
+document.body.dataset.theme = theme === "star_energy" ? "star-energy" : "berry-basket";
+
+function refresh() {
+const node = runtime.current;
+if (node) {
+promptEl.textContent = node.prompt || node.narration || "";
+statusEl.textContent = `节点：${node.id}（${node.type}）｜会话：${runtime.sessionStatus}`;
+document.getElementById("continue-btn").style.display =
+INTERACTIVE_TYPES.includes(node.type) ? "none" : "inline-block";
+}
+const violations = window.AIEduPlayer.checkLayout(mount);
+if (violations.length > 0) {
+statusEl.textContent += "｜布局违规：" + violations.map(v => v.issue).join("；");
+}
+}
+
+const INTERACTIVE_TYPES = ["predict", "construct", "manipulate", "retrieve", "prove"];
+document.getElementById("submit-btn").addEventListener("click", () => {
+const node = runtime.current;
+if (node && !INTERACTIVE_TYPES.includes(node.type)) {
+runtime.continue();
+refresh();
+return;
+}
+const result = runtime.answer(input.value);
+if (result.correct) {
+feedbackEl.textContent = result.feedback + " 🎉";
+feedbackEl.style.color = "#2e7d32";
+} else {
+feedbackEl.textContent = result.feedback + " 💪再想想，你离答案很近啦！";
+feedbackEl.style.color = "#c62828";
+}
+refresh();
+input.value = "";
+});
+document.getElementById("continue-btn").addEventListener("click", () => {
+runtime.continue();
+refresh();
+});
+document.getElementById("hint-btn").addEventListener("click", () => {
+const hint = runtime.assist();
+feedbackEl.textContent = hint ?? "没有更多提示了";
+feedbackEl.style.color = "#1565c0";
+});
+document.getElementById("replay-btn").addEventListener("click", () => {
+runtime.replay();
+refresh();
+});
+document.getElementById("reset-btn").addEventListener("click", () => {
+runtime.reset();
+refresh();
+});
+refresh();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<view class="card">
+  <view style="font-size:22px;font-weight:750">成长伙伴</view>
+  <view class="tiny" style="margin-top:6px">{{aiIdentity}}</view>
+</view>
+<view class="card">
+  <view style="font-weight:650">当前状态</view>
+  <view class="tiny" style="margin-top:8px">{{note}}</view>
+</view>
+<view class="card">
+  <view style="font-weight:650">安全说明</view>
+  <view class="tiny" style="margin-top:8px">{{safetyNote}}</view>
+</view>

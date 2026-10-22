@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数芽课堂</title>
+  <style>
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      margin: 0; padding: 16px;
+      background: linear-gradient(180deg, #fff6e9 0%, #ffe9d6 100%);
+      color: #5b4636;
+    }
+    #app { max-width: 960px; margin: 0 auto; }
+    h1 { font-size: clamp(22px, 4vw, 30px); color: #a3552e; margin: 0 0 4px; }
+    .subtitle { font-size: 15px; color: #a98a6f; margin-bottom: 12px; }
+    .panel {
+      background: #fffdf8; border-radius: 20px; padding: 18px;
+      margin-bottom: 12px; box-shadow: 0 4px 14px rgba(163,85,46,.12);
+      border: 2px solid #f5d9b8;
+    }
+    .unit-block {
+      display: inline-block; width: 30px; height: 30px;
+      border-radius: 50%; margin: 3px;
+      background: radial-gradient(circle at 32% 28%, #ffb3a0, #ff6f5e 62%, #e34f3f);
+      box-shadow: inset -2px -3px 4px rgba(160,40,30,.35), inset 2px 2px 3px rgba(255,255,255,.45);
+      position: relative;
+    }
+    .unit-block::after {
+      content: ""; position: absolute; top: -3px; left: 50%;
+      width: 6px; height: 5px; margin-left: -3px;
+      background: #7cb342; border-radius: 50% 50% 50% 0;
+      transform: rotate(-20deg);
+    }
+    .block-left { background: radial-gradient(circle at 32% 28%, #ffc59a, #ff9a4d 62%, #e07b2e); }
+    .block-right { background: radial-gradient(circle at 32% 28%, #ffb3a0, #ff6f5e 62%, #e34f3f); }
+    .block-in-transit { background: radial-gradient(circle at 32% 28%, #c9b1ff, #9b59b6 62%, #7d3fa0); }
+    .group-basket {
+      display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
+      min-height: 52px; padding: 8px; border-radius: 14px;
+      border: none; background: #fbe8cf;
+      box-shadow: inset 0 -6px 0 rgba(163,85,46,.15), inset 0 -12px 0 rgba(163,85,46,.08);
+      margin-bottom: 10px; min-width: 44px;
+    }
+    .group-label { font-weight: 700; font-size: 13px; color: #a3552e; margin-right: 8px; }
+    #readout { font-size: 18px; font-weight: bold; padding: 8px; min-height: 44px; }
+    @media (prefers-reduced-motion: reduce) { .unit-block { transition: none !important; } }
+  </style>
+</head>
+<body>
+<div id="app">
+  <h1>🌱 数芽课堂</h1>
+  <div class="subtitle" id="subtitle">一节已经过数学核验的课——先想一想，再看答案。</div>
+  <div id="preview-banner" style="display:none;background:#fff3cd;border:2px solid #e0c36b;border-radius:14px;
+       padding:10px 14px;margin:0 0 12px;font-size:15px;color:#6b5518;">
+    🌱 本预览不含答案与自动判定——把你的答案记下来，和学习伙伴核对吧
+  </div>
+  <div class="panel" id="lesson-root"></div>
+</div>
+<script src="/dist/player.js"></script>
+<script>
+(async function () {
+  const params = new URLSearchParams(location.search);
+  const encoded = params.get("spec");
+  const root = document.getElementById("lesson-root");
+  if (!encoded) {
+    root.textContent = "缺少 spec 参数（?spec=<base64url>）";
+    return;
+  }
+  let spec;
+  try {
+    // base64url → base64（atob 不接受 - 与 _）
+    const b64 = encoded.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = b64 + "=".repeat((4 - (b64.length % 4)) % 4);
+    const bytes = Uint8Array.from(atob(padded), (c) => c.charCodeAt(0));
+    spec = JSON.parse(new TextDecoder("utf-8").decode(bytes));
+  } catch (err) {
+    root.textContent = "spec 解析失败：" + err;
+    return;
+  }
+  const isFiltered = (spec.activity_graph || []).some(
+    (n) => n.locked === true ||
+      ((n.response && (n.response.expected === null || n.response.correct_index === null)) && !!n.gate),
+  );
+  if (isFiltered) {
+    document.getElementById("preview-banner").style.display = "block";
+  }
+  const view = window.AIEduPlayer.renderLesson(root, spec);
+  document.getElementById("subtitle").textContent =
+    `课程 ${spec.lesson_id}｜核验 verified=${spec.verification && spec.verification.verified}`;
+  window.__aieduLesson = view;
+})();
+</script>
+</body>
+</html>

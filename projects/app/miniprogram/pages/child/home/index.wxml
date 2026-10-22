@@ -1,0 +1,11 @@
+<view class="card">
+  <view class="tiny">今日学习 session · 不是只做一道题</view>
+  <view style="font-size:24px;font-weight:750;margin:8px 0">今天也向前一小步。</view>
+  <button class="btn" bindtap="startLesson">开始今天的练习</button>
+  <button class="btn secondary" bindtap="openAsk" style="margin-top:10px">拍一道题 · 问个知识点</button>
+  <view class="tiny" style="margin-top:12px">先尝试，再看讲解；不会的，一起想。</view>
+</view>
+<view class="card">
+  <view style="font-weight:650">我的路线</view>
+  <view class="tiny" style="margin-top:6px">{{routeNote}}</view>
+</view>
