@@ -66,21 +66,21 @@ DEMO_HTML = """<!DOCTYPE html>
 <div class="note">完整接入与教学技能见仓库 examples/ 与 teaching-math 技能。</div>
 </div>
 <script>
-async function run(q){{
-  if(!q||!q.trim()){{document.getElementById('result').textContent='请先输入题面';return}}
+async function run(q){
+  if(!q||!q.trim()){document.getElementById('result').textContent='请先输入题面';return}
   document.getElementById('result').textContent='生成中…';
-  const r=await fetch('/demo/generate',{{method:'POST',headers:{{'content-type':'application/json'}},
-    body:JSON.stringify({{question:q.trim()}})}});
+  const r=await fetch('/demo/generate',{method:'POST',headers:{'content-type':'application/json'},
+    body:JSON.stringify({question:q.trim()})});
   const j=await r.json();
   document.getElementById('result').textContent=JSON.stringify(j,null,2);
-}}
+}
 </script>
 </body></html>"""
 
-MCP_SNIPPET = """{"mcpServers":{"aiedu":{"command":"uvx","args":["aiedu-mcp"]}}}
+MCP_SNIPPET = """{"mcpServers":{"aiedu":{"command":"uvx","args":["aiedu-mcp"]}}
 # HTTP 端点 + Bearer（自服务注册 token）：
 # {"mcpServers":{"aiedu":{"type":"http","url":"https://<demo域名>/mcp/",
-#   "headers":{"Authorization":"Bearer <你的token>"}}}}"""
+#   "headers":{"Authorization":"Bearer <你的token>"}}"""
 
 
 def install_demo_routes(server: FastMCP) -> None:
