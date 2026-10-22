@@ -120,6 +120,9 @@ SKILL_TO_TEMPLATE = {
     "make-ten": "make_ten",
     "borrow-ten": "borrow_ten",
     "fraction-equal-parts": "fraction_equal_parts",
+    "sum-diff": "sum_diff",
+    "chicken-rabbit": "chicken_rabbit",
+    "arithmetic-sequence": "arithmetic_sequence",
 }
 
 

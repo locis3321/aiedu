@@ -133,6 +133,13 @@ def _candidate_queries(text: str) -> list[str]:
         if known in text:
             queries.append("分数")
             break
+    # 方法模板查询词（策略方法库与 skill 检索的桥接；文本特征 → 方法关键词）
+    if "鸡兔" in text or "头和" in text or "只脚" in text:
+        queries.append("鸡兔同笼")
+    if ("和是" in text and "差是" in text) or "和差" in text:
+        queries.append("和差倍")
+    if "每次加" in text or "等差数列" in text or "首项" in text:
+        queries.append("等差数列")
     return queries
 
 
