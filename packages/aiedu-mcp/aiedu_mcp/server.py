@@ -38,6 +38,9 @@ class BearerTokenMiddleware(BaseHTTPMiddleware):
         self._tok = os.environ.get(AUTH_TOKEN_ENV, "").strip().encode()
 
     async def dispatch(self, request, call_next):
+        # 静态 token 只保护 MCP 端点（/mcp*）；演示页/注册/吊销等 HTTP route 由各自逻辑把关
+        if not request.url.path.startswith("/mcp"):
+            return await call_next(request)
         scheme, _, value = request.headers.get("authorization", "").partition(" ")
         if scheme.lower() != "bearer" or not hmac.compare_digest(
             value.strip().encode("utf-8"), self._tok
@@ -151,7 +154,7 @@ def main(argv: list[str] | None = None) -> None:
         if os.environ.get("AIEDU_RATE_LIMIT", "").strip() == "1":
             from aiedu_mcp.ratelimit import CallerContextMiddleware
 
-            middleware.append(CallerContextMiddleware())
+            middleware.append(Middleware(CallerContextMiddleware))
         app = server.http_app(middleware=middleware)
         # C7：同域挂载 player（AIEDU_SERVE_PLAYER=1）
         if os.environ.get("AIEDU_SERVE_PLAYER", "").strip() == "1":

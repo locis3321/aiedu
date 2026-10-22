@@ -29,6 +29,8 @@ run grep -q "version = \"${TAG#v}\"" "$REPO_ROOT/packages/aiedu-mcp/pyproject.to
 
 echo "== 1) 构建 player dist（唯一真源 = 同 tag）=="
 run bash -c "cd '$REPO_ROOT/packages/aiedu-player' && npm ci && npm run build"
+echo "== 1b) 站点装配（dist/ + lesson.html，与 serve.mjs/同域挂载同布局）=="
+run bash -c "rm -rf '$REPO_ROOT/.stage-player-site' && mkdir -p '$REPO_ROOT/.stage-player-site/dist' &&   cp -r '$REPO_ROOT/packages/aiedu-player/dist/.' '$REPO_ROOT/.stage-player-site/dist/' &&   cp '$REPO_ROOT/packages/aiedu-player/templates/lesson/index.html' '$REPO_ROOT/.stage-player-site/lesson.html'"
 
 echo "== 2) 构建 aiedu-mcp wheel =="
 run bash -c "cd '$REPO_ROOT' && bash scripts/build_dist.sh >/dev/null"
@@ -40,8 +42,8 @@ fi
 
 : "${VPS:?请提供 VPS 地址与 tag：bash deploy/deploy-demo.sh user@host v0.1.0}"
 
-echo "== 3) 同步 player dist 与 wheel 到 VPS =="
-run rsync -az "$REPO_ROOT/packages/aiedu-player/dist/" "$VPS:/opt/aiedu/player_dist/"
+echo "== 3) 同步 player 站点与 wheel 到 VPS =="
+run rsync -az "$REPO_ROOT/.stage-player-site/" "$VPS:/opt/aiedu/player_dist/"
 run rsync -az "$REPO_ROOT/packages/aiedu-mcp/dist/" "$VPS:/tmp/aiedu-dist/"
 
 echo "== 4) 在 VPS 安装同 tag 包并重启服务 =="

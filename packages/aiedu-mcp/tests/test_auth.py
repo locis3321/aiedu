@@ -74,3 +74,17 @@ async def test_no_env_no_auth_200(monkeypatch) -> None:
     async for client in _client(_asgi_app()):
         resp = await client.post("/mcp", json=INIT_BODY)
         assert resp.status_code == 200
+
+
+async def test_env_token_does_not_block_demo_paths(monkeypatch) -> None:
+    """静态 token 只保护 /mcp*：demo 页与 /register 匿名可访问（演示档语义）。"""
+    monkeypatch.setenv("AIEDU_AUTH_TOKEN", "secret-token")
+    app = build_server().http_app(middleware=_http_middleware())
+    async with app.router.lifespan_context(app):
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            page = await client.get("/")
+            assert page.status_code == 200  # 匿名可浏览
+            reg = await client.post("/register", json={})
+            assert reg.status_code == 201  # 匿名可注册
+            mcp = await client.post("/mcp", json=INIT_BODY)  # MCP 端点仍需 token
+            assert mcp.status_code == 401

@@ -126,12 +126,22 @@ class AuthStore:
         self._conn.close()
 
 
+_STORE_CACHE: dict[str, AuthStore] = {}
+
+
 def get_auth_store() -> AuthStore:
-    """按 env 取存储：AIEDU_AUTH_DB 指定文件路径；未设置 → 内存临时库（测试/未启用）。"""
+    """按 env 取存储（进程内单例）：AIEDU_AUTH_DB 指定文件路径；未设置 → 内存临时库。
+
+    单例原因（2026-10-21 实测）：未设 DB 路径时若每次新建连接，register 写入的内存库
+    与鉴权中间件查询的内存库不是同一个——token 永远 401。按路径缓存保证
+    register/revoke/TokenAuthMiddleware 共用同一 store（与 C11 部署的 AIEDU_AUTH_DB 文件语义一致）。
+    """
     import os
 
-    path = os.environ.get(AUTH_DB_ENV, "").strip()
-    return AuthStore(path if path else ":memory:")
+    path = os.environ.get(AUTH_DB_ENV, "").strip() or ":memory:"
+    if path not in _STORE_CACHE:
+        _STORE_CACHE[path] = AuthStore(path)
+    return _STORE_CACHE[path]
 
 
 # ---------------------------------------------------------------------------
@@ -153,6 +163,9 @@ class TokenAuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         from starlette.responses import JSONResponse
 
+        # 只保护 MCP 端点；演示页/注册/吊销由各自逻辑把关（匿名试用+限流语义）
+        if not request.url.path.startswith("/mcp"):
+            return await call_next(request)
         scheme, _, value = request.headers.get("authorization", "").partition(" ")
         if scheme.lower() != "bearer":
             return JSONResponse(
