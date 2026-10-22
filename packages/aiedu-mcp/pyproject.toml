@@ -30,14 +30,13 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# ⚠️ LLM 路径（aiedu-core 的 llm_router 用 agentscope）与 MCP 层**不兼容于同一环境**（已实测确认）：
-#   agentscope 2.0.9 硬性要求 `mcp<2.0.0`，而 fastmcp 4.1.3 需要 `mcp>=2.0.0`。
-#   - 用 `--no-deps` 装 agentscope 在全新环境**不可用**（缺 jinja2/aiofiles 等运行时依赖）；
-#   - 全量安装会把 mcp SDK 降级到 1.x，fastmcp 直接崩溃。
-# 因此 aiedu-mcp **不提供 [llm] extra**，产品语义为：
-#   - 无 LLM env：模板外题面显式 capability_gap（能力诚实）；
-#   - 设了 LLM env：模板外题面 → 显式报错（依赖缺失），不静默降级。
-# 需要 LLM 自由设计的场景请在**独立环境**使用 aiedu-core 的 Python API（`pip install aiedu-core[llm]`）。
+# LLM 为可选路径（2026-10-21 决策 B 后已解耦）：
+# agentscope↔fastmcp 的 mcp 版本硬冲突已通过"llm 路径改 httpx 直连"从根上消除，
+# 因此 aiedu-mcp 重新提供 [llm] extra（透传 aiedu-core[llm] 的 httpx）。
+# 注意：匿名 + LLM env + HTTP 传输的启动硬拒绝仍生效（防免费暴露 LLM 成本）。
+llm = [
+    "aiedu-core[llm]>=0.1.0",
+]
 dev = [
     "pytest>=8",
     "pytest-asyncio>=0.23",

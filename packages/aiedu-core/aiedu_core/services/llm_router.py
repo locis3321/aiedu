@@ -37,22 +37,17 @@ class ModelRouter:
         if not s.llm_configured:
             return None
         try:
-            from agentscope.credential import OpenAICredential
-            from agentscope.model import OpenAIChatModel
+            import httpx  # noqa: F401 —— [llm] extra 依赖，未安装时显式失败
         except ImportError as exc:  # [llm] extra 未安装：显式失败，不静默降级
             raise RuntimeError(
-                "LLM configured but agentscope not installed "
-                "(install aiedu-core[llm])"
+                "LLM configured but httpx not installed (install aiedu-core[llm])"
             ) from exc
-        from pydantic import SecretStr
+        from aiedu_core.llm_client import CompatChatModel
 
-        model = OpenAIChatModel(
-            credential=OpenAICredential(
-                api_key=SecretStr(s.llm_api_key),
-                base_url=s.llm_base_url_normalized,
-            ),
+        model = CompatChatModel(
             model=s.llm_model_name or "",
-            stream=False,
+            base_url=s.llm_base_url_normalized or "",
+            api_key=s.llm_api_key or "",
         )
         self._routes[role] = ModelRoute(
             role=role,

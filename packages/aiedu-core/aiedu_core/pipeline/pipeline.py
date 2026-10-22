@@ -274,10 +274,10 @@ async def _call_model(model, prompt: str, response_format: dict | None = None) -
     """
     import time
 
-    from agentscope.message import Msg, TextBlock
+    from aiedu_core.llm_client import Message as Msg, TextBlock
 
     started = time.time()
-    msgs = [Msg(name="user", content=[TextBlock(text=prompt)], role="user")]
+    msgs = [Msg(role="user", content=prompt)]
     _tracer = get_tracer()
     with _tracer.start_as_current_span("llm") as _sp:
         _sp.set_attribute("aiedu.llm.prompt", _trunc(prompt))

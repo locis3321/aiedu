@@ -36,9 +36,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# LLM 为可选路径：未安装时无 LLM env 的全链路（已覆盖题型）必须可跑
+# LLM 为可选路径：经 httpx 直连 OpenAI 兼容接口。
+# 2026-10-21 决策 B：agentscope 2.0.9 要求 mcp<2.0.0 与 fastmcp 4.1.3（mcp>=2.0.0）硬冲突，
+# 已替换为 httpx 直连（零 agentscope 依赖），LLM 与 MCP 可同环境共存。
 llm = [
-    "agentscope==2.0.9",
     "httpx>=0.27",
 ]
 dev = [
