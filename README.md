@@ -2,16 +2,30 @@
 
 给 AI Agent 的数学教学引擎：输入一道数学题，输出经 **SymPy 独立核验**、**答案门控（先想后看）**、可交互渲染的课程规格（LessonSpec v2）。
 
-## 快速开始
+## 快速开始（自建部署）
+
+PyPI 尚未发布，从仓库安装：
 
 ```bash
-uvx aiedu-mcp
+git clone https://github.com/locis3321/aiedu.git && cd aiedu
+python -m venv .venv
+# Windows: .venv\Scripts\python -m pip install -e packages/aiedu-core -e packages/aiedu-mcp
+# 其它:    .venv/bin/python -m pip install -e packages/aiedu-core -e packages/aiedu-mcp
+# 可选：LLM 路径（配置后未覆盖题型走受控自由设计，而非 capability_gap）
+#   （同上 pip 命令，包名加 [llm]：packages/aiedu-core[llm] 与 packages/aiedu-mcp[llm]）
+
+# 启动 stdio（Claude Code / 任意 MCP 宿主）
+.venv/bin/python -m aiedu_mcp.server --transport stdio
+# 或 HTTP：
+.venv/bin/python -m aiedu_mcp.server --transport http --port 8000
 ```
 
-Claude Code `.mcp.json`：
+Claude Code `.mcp.json`（命令用你的安装路径）：
 
 ```json
-{"mcpServers": {"aiedu": {"command": "uvx", "args": ["aiedu-mcp"]}}}
+{"mcpServers": {"aiedu": {
+  "command": "/path/to/aiedu/.venv/bin/python",
+  "args": ["-m", "aiedu_mcp.server", "--transport", "stdio"]}}}
 ```
 
 ![演示](docs/assets/readme-demo.gif)
@@ -31,12 +45,12 @@ Claude Code `.mcp.json`：
 ## 能力边界
 
 确定性覆盖：凑十法（`16+8`）、破十法（`16-9`）、分数等分概念（"平均分成 N 份取 M 份"）。
-其余题型（如 `52-37`、`1/2+1/4`、乘法出课）显式返回 `capability_gap`，不猜测。
+其余题型（如 `52-37`、`1/2+1/4`、乘法出课）：未配置 LLM 时显式返回 `capability_gap`；配置 LLM（`[llm]` extra）时走受控自由设计（计算与结构仍经核验与门禁），均不猜测。
 
 ## HTTP 传输与鉴权（可选）
 
 ```bash
-uvx aiedu-mcp --transport http --port 8000
+.venv/bin/python -m aiedu_mcp.server --transport http --port 8000
 ```
 
 - `AIEDU_AUTH_TOKEN`：静态 Bearer token（未设置则不启用）
@@ -63,4 +77,3 @@ cd packages/aiedu-player && npm ci && npm run build && npx playwright test
 
 [Apache-2.0](LICENSE)
 
-> 发布状态：PyPI 尚未发布（`scripts/release.sh` 就绪，需 PyPI token）。
